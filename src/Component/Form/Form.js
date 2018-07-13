@@ -15,14 +15,21 @@ class Form extends Component {
     this.createProduct=this.createProduct.bind(this);
     }
 
-    createProduct(val){
-        axios.post('/api/product').then(results => {
-            this.setState({
-                name: val,
-                price: val,
-                image: val
-            })
-        })
+    createProduct(){
+        let {name, price, image} = this.state;
+        if(name){
+            let product = {
+                name,
+                price: this.state.price,
+                image
+            }
+            axios.post('/api/product').then(results => {
+                this.props.getInventory();
+                this.handleCancel();
+            }).catch(err => console.log("it aint working", err))
+        }else {
+            console.log("Name Missing")
+        }
     }
 
     handleInput1(val){
@@ -55,7 +62,6 @@ class Form extends Component {
 render(){
     return(
         <div className="form">
-            {this.props.getRequest}
             <div className="input-container">
                 <input placeholder="name" value={this.state.name} onChange={e => this.handleInput1(e.target.value)} type="text"/>
                 <input placeholder="price" value={this.state.price} onChange={e => this.handleInput2(e.target.value)} type="text"/>
